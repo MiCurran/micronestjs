@@ -12,13 +12,21 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  const winnerId = parseInt(req.query.winnerId)
+  const gameId = parseInt(req.query.gameId)
   const data = (await gameGraphqlClient.mutate({
     mutation: gql`
-       mutation {CreateGame{
+       mutation($winnerId: Int!, $gameId: Int!) {
+        UpdateWinner(
+          updateGameInput: {
+            id: $gameId, 
+            gameWinner: $winnerId
+        }){
   id
   createdAt
 }}
     `,
+    variables: {winnerId: winnerId, gameId: gameId}
   })).data;
   //check for error 
   res.status(200).json({data: data})
