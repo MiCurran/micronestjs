@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { gql } from '@apollo/client';
-import { gameGraphqlClient } from '../../graphql';
+import { playerGraphqlClient } from '../../graphql';
 
 type Data = {
   name?: string
@@ -13,13 +13,14 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   console.log(req.query);
-  console.log('ummmm hello')
-  const data = (await gameGraphqlClient.mutate({
+  // {gameId: 2}
+  const data = (await playerGraphqlClient.mutate({
     mutation: gql`
-       mutation {CreateGame{
-  id
-  createdAt
-}}
+      mutation {
+  initPlayer(data: {gameId: 1}){
+    gameId
+  }
+}
     `,
   })).data;
   //check for error 
