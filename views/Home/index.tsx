@@ -23,7 +23,6 @@ const callCreatePlayer1 = async () => {
   const status = response.status;
   const data = await response.json();
   if (status === 200) {
-    console.log('',data.data.initPlayer.id)
     setPlayerOne(data.data.initPlayer.id);
   }
 }
@@ -33,13 +32,11 @@ const callCreatePlayer2 = async () => {
   const status = response.status;
   const data = await response.json();
   if (status === 200) {
-    console.log('',data.data.initPlayer.id)
     setPlayerTwo(data.data.initPlayer.id);
   }
 }
 
 const callPlayerOneAttack = async () => {
-  console.log(game);
   const response = await fetch(`/api/playerOneAttack?gameId=${game.id}`);
   const status = response.status;
   const data = await response.json();
@@ -48,7 +45,6 @@ const callPlayerOneAttack = async () => {
   }
 }
 const callPlayerTwoAttack = async () => {
-  console.log(game);
   const response = await fetch(`/api/playerTwoAttack?gameId=${game.id}`);
   const status = response.status;
   const data = await response.json();
