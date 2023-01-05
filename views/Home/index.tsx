@@ -7,7 +7,7 @@ export default function HomeView() {
   const [playerTwo, setPlayerTwo] = useState({ id: 0 });
   const [playerOneHits, setPlayerOneHits] = useState<number>(0);
   const [playerTwoHits, setPlayerTwoHits] = useState<number>(0);
-  const [winnerHere, setWinnerHere] = useState(null);
+  const [winnerHere, setWinnerHere] = useState<number>(0);
 
   const callStartGame = async () => {
     const response = await fetch('/api/hello');
@@ -61,24 +61,27 @@ export default function HomeView() {
     }
   };
 
+  const setWinner = async (gameId: number, winnerId: number) => {
+    const response = await fetch(
+      `/api/updateWinner?gameId=${gameId}&winnerId=${winnerId}`
+    );
+    const status = response.status;
+    const data = await response.json().then((data) => {
+      if (status === 200 && winnerId === data.data.UpdateWinner.gameWinner) {
+        setWinnerHere(data.data.UpdateWinner.gameWinner);
+        console.log('We have a winner!:', winnerId);
+      }
+    });
+  };
+
   useEffect(() => {
-    //when either playerOnehits || playerTwoHits === 10
     if (playerOneHits === 10) {
-      //now we know winner
-      // call graphql to update the gameWinner col
-      // set gameWinner playerOne
-      const response = fetch(
-        `/api/updateWinner?gameId=${game.id}&winnerId=${playerOne}`
-      ).then((res) => res.json().then((json) => console.log(json)));
-      //const status = response.status;
-      //const data = await response.json();
-      console.log(response);
+      setWinner(game.id, playerOne.id);
     }
     if (playerTwoHits === 10) {
-      //set gameWinner playerTwo
-      // playerTwo.id
+      setWinner(game.id, playerOne.id);
     }
-  }, [playerOneHits, playerTwoHits]);
+  }, [game.id, playerOne.id, playerOneHits, playerTwoHits]);
 
   return (
     <>
