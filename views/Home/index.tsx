@@ -1,149 +1,147 @@
-import Head from 'next/head'
+import Head from 'next/head';
 import { useEffect, useState } from 'react';
 
 export default function HomeView() {
-const [game, setGame] = useState({id: 0, isActive: false});
-const [playerOne, setPlayerOne] = useState({id: 0});
-const [playerTwo, setPlayerTwo] = useState({id: 0});
-const [playerOneHits, setPlayerOneHits] = useState<number>(0)
-const [playerTwoHits, setPlayerTwoHits] = useState<number>(0)
-const [winnerHere, setWinnerHere] = useState(null);
+  const [game, setGame] = useState({ id: 0, isActive: false });
+  const [playerOne, setPlayerOne] = useState({ id: 0 });
+  const [playerTwo, setPlayerTwo] = useState({ id: 0 });
+  const [playerOneHits, setPlayerOneHits] = useState<number>(0);
+  const [playerTwoHits, setPlayerTwoHits] = useState<number>(0);
+  const [winnerHere, setWinnerHere] = useState(null);
 
-const callStartGame = async () => {
-  const response = await fetch('/api/hello');
-  const status = response.status;
-  const data = await response.json();
-  if (status === 200) {
-    setGame({...data.data.CreateGame});
-  }
-}
+  const callStartGame = async () => {
+    const response = await fetch('/api/hello');
+    const status = response.status;
+    const data = await response.json();
+    if (status === 200) {
+      setGame({ ...data.data.CreateGame });
+    }
+  };
 
-const saveIdToGame = async (gameId: number, playerNumber: 1 | 2, playerId: number) => {
-  const response = await fetch(`/api/saveIdToGame?playerNumber=${playerNumber}`, {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({playerId: playerId, gameId: gameId})
-  })
-  const data = response.json()
-};
-
-const callCreatePlayer = async (playerNumber: 1 | 2) => {
-  const response = await fetch(`/api/createPlayer?gameId=${game.id}`)
-  const data = response.json()
-    .then(data => {
-      if (playerNumber === 1) {
-        setPlayerOne(data.data.initPlayer.id)
-        saveIdToGame(game.id, playerNumber, data.data.initPlayer.id)
-
-      } else {
-        setPlayerTwo(data.data.initPlayer.id)
-        saveIdToGame(game.id, playerNumber, data.data.initPlayer.id)
+  const saveIdToGame = async (
+    gameId: number,
+    playerNumber: 1 | 2,
+    playerId: number
+  ) => {
+    const response = await fetch(
+      `/api/saveIdToGame?playerNumber=${playerNumber}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ playerId: playerId, gameId: gameId }),
       }
-    })
-}
+    );
+    const data = response.json();
+  };
 
-const sendAttack = async (playerId: number): Promise<void> => {
-  const response = await fetch(`api/sendAttack?playerId=${playerId}`);
-  const data = response.json();
-  const status = response.status
-  if(status === 200) {
-    //setPlayerOneHits(data.data)
-  }
-}
+  const callCreatePlayer = async (playerNumber: 1 | 2) => {
+    const response = await fetch(`/api/createPlayer?gameId=${game.id}`);
+    const data = response.json().then((data) => {
+      if (playerNumber === 1) {
+        setPlayerOne({ id: data.data.initPlayer.id });
+        saveIdToGame(game.id, playerNumber, data.data.initPlayer.id);
+      } else {
+        setPlayerTwo({ id: data.data.initPlayer.id });
+        saveIdToGame(game.id, playerNumber, data.data.initPlayer.id);
+      }
+    });
+  };
 
-useEffect(() => {
+  const sendAttack = async (playerId: number): Promise<void> => {
+    const response = await fetch(`/api/sendAttack?id=${playerId}`);
+    const status = response.status;
+    const data = await response.json();
+    if (status === 200 && playerId === playerOne.id) {
+      setPlayerOneHits(data.data.sendAttack.hits);
+    }
+    if (status === 200 && playerId === playerTwo.id) {
+      setPlayerTwoHits(data.data.sendAttack.hits);
+    }
+  };
+
+  useEffect(() => {
     //when either playerOnehits || playerTwoHits === 10
     if (playerOneHits === 10) {
-        //now we know winner
-        // call graphql to update the gameWinner col
-        // set gameWinner playerOne
-        const response = fetch(`/api/updateWinner?gameId=${game.id}&winnerId=${playerOne}`)
-            .then((res) => res.json().then((json) => console.log(json)))
-        //const status = response.status;
-        //const data = await response.json();
-        console.log(response);
+      //now we know winner
+      // call graphql to update the gameWinner col
+      // set gameWinner playerOne
+      const response = fetch(
+        `/api/updateWinner?gameId=${game.id}&winnerId=${playerOne}`
+      ).then((res) => res.json().then((json) => console.log(json)));
+      //const status = response.status;
+      //const data = await response.json();
+      console.log(response);
     }
     if (playerTwoHits === 10) {
-        //set gameWinner playerTwo
-        // playerTwo.id
+      //set gameWinner playerTwo
+      // playerTwo.id
     }
-}, [playerOneHits, playerTwoHits])
+  }, [playerOneHits, playerTwoHits]);
 
   return (
     <>
       <Head>
         <title>Create Next App</title>
-        <meta name="description" content="Generated by create next app" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta name='description' content='Generated by create next app' />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main style={{
-          display: "flex",
+      <main
+        style={{
+          display: 'flex',
           flexDirection: 'column',
           height: '100vh',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
-
         <div>
           <h3>Hits</h3>
           <p>player 1: {playerOneHits}</p>
+          <p>playerOne id: {playerOne.id}</p>
           <p>player 2: {playerTwoHits}</p>
+          <p>playerTwo id: {playerTwo.id}</p>
         </div>
 
         <button
           disabled={game.isActive !== false}
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
           onClick={async () => callStartGame()}
         >
           start game
         </button>
 
-          {game.isActive === true &&
-            <>
+        {game.isActive === true && (
+          <>
             <p>{JSON.stringify(game, null, 2)}</p>
-            <button
-              onClick={() => callCreatePlayer(1)}
-            >
-              create player 1
-            </button>
+            <button onClick={() => callCreatePlayer(1)}>create player 1</button>
 
-            <button
-              onClick={() => callCreatePlayer(2)}
-            >
-              create player 2
-            </button>
-            </>
-          }
+            <button onClick={() => callCreatePlayer(2)}>create player 2</button>
+          </>
+        )}
 
-          {playerOne.id !== 0 &&
+        {playerOne.id !== 0 && (
           <>
             <p>player one is here</p>
-            <button
-              onClick={() => sendAttack(playerOne.id)}
-            >
+            <button onClick={() => sendAttack(playerOne.id)}>
               send playerOne attack
             </button>
-            </>
-          }
-          {playerTwo.id !== 0 &&
+          </>
+        )}
+        {playerTwo.id !== 0 && (
           <>
             <p>player two is here</p>
-            <button
-              onClick={() => sendAttack(playerTwo.id)}
-            >
+            <button onClick={() => sendAttack(playerTwo.id)}>
               send playerTwo attack
             </button>
-            </>
-          }
+          </>
+        )}
       </main>
     </>
-  )
+  );
 }
-
 
 /// create game --> createPlayer() --> if return success then call game --> playerId retured set it in game
 // call to create player --> player Service --> FE saves it in state && fires another api call to game
