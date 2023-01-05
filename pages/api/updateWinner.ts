@@ -12,8 +12,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const winnerId = parseInt(req.query.winnerId);
-  const gameId = parseInt(req.query.gameId);
+  const winnerId = parseInt(req.query.winnerId as string);
+  const gameId = parseInt(req.query.gameId as string);
   const data = (
     await gameGraphqlClient.mutate({
       mutation: gql`

@@ -12,7 +12,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  let gameId = parseFloat(req.query.gameId);
+  let gameId = parseFloat(req.query.gameId as string);
 
   const data = (
     await playerGraphqlClient.mutate({
