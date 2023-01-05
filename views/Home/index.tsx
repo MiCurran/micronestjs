@@ -2,11 +2,9 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import classes from './home.module.css';
 export default function HomeView() {
-  const [game, setGame] = useState({ id: 0, isActive: false });
-  const [playerOne, setPlayerOne] = useState({ id: 0 });
-  const [playerTwo, setPlayerTwo] = useState({ id: 0 });
-  const [playerOneHits, setPlayerOneHits] = useState<number>(0);
-  const [playerTwoHits, setPlayerTwoHits] = useState<number>(0);
+  const [game, setGame] = useState<Game>({ id: 0, isActive: false });
+  const [playerOne, setPlayerOne] = useState<Player>({ id: 0, hits: 0 });
+  const [playerTwo, setPlayerTwo] = useState<Player>({ id: 0, hits: 0 });
   const [winnerHere, setWinnerHere] = useState<number>(0);
 
   const callStartGame = async () => {
@@ -40,10 +38,10 @@ export default function HomeView() {
     const response = await fetch(`/api/createPlayer?gameId=${game.id}`);
     const data = response.json().then((data) => {
       if (playerNumber === 1) {
-        setPlayerOne({ id: data.data.initPlayer.id });
+        setPlayerOne({ id: data.data.initPlayer.id, hits: 0 });
         saveIdToGame(game.id, playerNumber, data.data.initPlayer.id);
       } else {
-        setPlayerTwo({ id: data.data.initPlayer.id });
+        setPlayerTwo({ id: data.data.initPlayer.id, hits: 0 });
         saveIdToGame(game.id, playerNumber, data.data.initPlayer.id);
       }
     });
@@ -54,10 +52,10 @@ export default function HomeView() {
     const status = response.status;
     const data = await response.json();
     if (status === 200 && playerId === playerOne.id) {
-      setPlayerOneHits(data.data.sendAttack.hits);
+      setPlayerOne({...playerOne, hits: playerOne.hits + 1});
     }
     if (status === 200 && playerId === playerTwo.id) {
-      setPlayerTwoHits(data.data.sendAttack.hits);
+      setPlayerTwo({...playerTwo, hits: playerTwo.hits + 1});
     }
   };
 
@@ -88,13 +86,13 @@ export default function HomeView() {
   const isPlayerOne = winnerHere === playerOne.id;
 
   useEffect(() => {
-    if (playerOneHits === 10) {
+    if (playerOne.hits === 10) {
       setWinner(game.id, playerOne.id);
     }
-    if (playerTwoHits === 10) {
+    if (playerTwo.hits === 10) {
       setWinner(game.id, playerTwo.id);
     }
-  }, [game.id, playerOne.id, playerOneHits, playerTwo.id, playerTwoHits]);
+  }, [game.id, playerOne.id, playerOne.hits, playerTwo.id, playerTwo.hits]);
 
   return (
     <>
@@ -106,13 +104,13 @@ export default function HomeView() {
       </Head>
       <main className={classes.app}>
         <div className={classes.scoreRow}>
-          <h3 className={getPlayerClass(playerTwoHits)}>player 1</h3>
-          <h2>{playerOneHits}</h2>
+          <h3 className={getPlayerClass(playerTwo.hits)}>player 1</h3>
+          <h2>{playerOne.hits}</h2>
           <div>
             <h4>Game: {game.id}</h4>
           </div>
-          <h2>{playerTwoHits}</h2>
-          <h3 className={getPlayerClass(playerOneHits)}>player 2</h3>
+          <h2>{playerTwo.hits}</h2>
+          <h3 className={getPlayerClass(playerOne.hits)}>player 2</h3>
         </div>
         {winnerHere !== 0 && (
           <div className={classes.winner}>
