@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import classes from './home.module.css'
+import classes from './home.module.css';
 export default function HomeView() {
   const [game, setGame] = useState({ id: 0, isActive: false });
   const [playerOne, setPlayerOne] = useState({ id: 0 });
@@ -85,6 +85,8 @@ export default function HomeView() {
       return playerClass;
   }
 
+  const isPlayerOne = winnerHere === playerOne.id;
+
   useEffect(() => {
     if (playerOneHits === 10) {
       setWinner(game.id, playerOne.id);
@@ -102,9 +104,7 @@ export default function HomeView() {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main
-        className={classes.app}
-      >
+      <main className={classes.app}>
         <div className={classes.scoreRow}>
           <h3 className={getPlayerClass(playerTwoHits)}>player 1</h3>
           <h2>{playerOneHits}</h2>
@@ -114,48 +114,53 @@ export default function HomeView() {
           <h2>{playerTwoHits}</h2>
           <h3 className={getPlayerClass(playerOneHits)}>player 2</h3>
         </div>
-        <div className={classes.game}>
-        {!game.isActive && 
-          <button
-            onClick={async () => callStartGame()}
-          >
-            Start Game! 🚀
-          </button>
-        }
-        {game.isActive && 
-          <div className={classes.players}>
-            <div className={classes.player}>
-              <button
-                className={playerOne.id !== 0 ? classes.hidden : undefined} 
-                onClick={() => callCreatePlayer(1)}
-              >
-                create player 1
-              </button>
-              {playerOne.id !== 0 && 
-                <button onClick={() => sendAttack(playerOne.id)}>
-                  send player one attack ⚔️
-                </button>
-              }
-            </div>
-            <div className={classes.player}>
-              <button
-                className={playerTwo.id !== 0 ? classes.hidden : undefined}
-                onClick={() => callCreatePlayer(2)}
-              >
-                create player 2
-              </button>
-              {playerTwo.id !== 0 && 
-                <button onClick={() => sendAttack(playerTwo.id)}>
-                  send player two attack ⚔️
-                </button>
-              }
-            </div>
+        {winnerHere !== 0 && (
+          <div className={classes.winner}>
+            <h2>
+              We have a winner!: 🏆 {isPlayerOne ? 'Player 1' : 'Player 2'}
+            </h2>
           </div>
-        }
-        </div>     
-        {game.isActive && 
+        )}
+        <div className={classes.game}>
+          {!game.isActive && (
+            <button onClick={async () => callStartGame()}>
+              Start Game! 🚀
+            </button>
+          )}
+          {game.isActive && (
+            <div className={classes.players}>
+              <div className={classes.player}>
+                <button
+                  className={playerOne.id !== 0 ? classes.hidden : undefined}
+                  onClick={() => callCreatePlayer(1)}
+                >
+                  create player 1
+                </button>
+                {playerOne.id !== 0 && (
+                  <button onClick={() => sendAttack(playerOne.id)}>
+                    send player one attack ⚔️
+                  </button>
+                )}
+              </div>
+              <div className={classes.player}>
+                <button
+                  className={playerTwo.id !== 0 ? classes.hidden : undefined}
+                  onClick={() => callCreatePlayer(2)}
+                >
+                  create player 2
+                </button>
+                {playerTwo.id !== 0 && (
+                  <button onClick={() => sendAttack(playerTwo.id)}>
+                    send player two attack ⚔️
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+        {game.isActive && (
           <p className={classes.footer}>{JSON.stringify(game, null, 2)}</p>
-        }
+        )}
       </main>
     </>
   );

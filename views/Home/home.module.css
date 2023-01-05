@@ -11,11 +11,11 @@
 }
 
 .scoreRow {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 25px;
-    width: 100vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 25px;
+  width: 100vw;
 }
 
 h3.danger {
@@ -27,19 +27,25 @@ h3.warning {
 }
 
 .game {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .players {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 .player {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .hidden {
-    display: none
+  display: none;
+}
+
+.winner {
+  display: flex;
+  flex-direction: column;
+  color: red;
 }
