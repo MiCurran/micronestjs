@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-
+import classes from './home.module.css'
 export default function HomeView() {
   const [game, setGame] = useState({ id: 0, isActive: false });
   const [playerOne, setPlayerOne] = useState({ id: 0 });
@@ -89,55 +89,60 @@ export default function HomeView() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <main
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100vh',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
+        className={classes.app}
       >
-        <div>
-          <h3>Hits</h3>
-          <p>player 1: {playerOneHits}</p>
-          <p>playerOne id: {playerOne.id}</p>
-          <p>player 2: {playerTwoHits}</p>
-          <p>playerTwo id: {playerTwo.id}</p>
+        <div className={classes.scoreRow}>
+          <h3>player 1</h3>
+          <h2>{playerOneHits}</h2>
+          <div>
+            <h4>Game: {game.id}</h4>
+            <h3>Score</h3>
+          </div>
+          <h2>{playerTwoHits}</h2>
+          <h3>player 2</h3>
         </div>
-
-        <button
-          disabled={game.isActive !== false}
-          style={{ cursor: 'pointer' }}
-          onClick={async () => callStartGame()}
-        >
-          start game
-        </button>
-
-        {game.isActive === true && (
-          <>
-            <p>{JSON.stringify(game, null, 2)}</p>
-            <button onClick={() => callCreatePlayer(1)}>create player 1</button>
-
-            <button onClick={() => callCreatePlayer(2)}>create player 2</button>
-          </>
-        )}
-
-        {playerOne.id !== 0 && (
-          <>
-            <p>player one is here</p>
-            <button onClick={() => sendAttack(playerOne.id)}>
-              send playerOne attack
-            </button>
-          </>
-        )}
-        {playerTwo.id !== 0 && (
-          <>
-            <p>player two is here</p>
-            <button onClick={() => sendAttack(playerTwo.id)}>
-              send playerTwo attack
-            </button>
-          </>
-        )}
+        <div className={classes.game}>
+        {!game.isActive && 
+          <button
+            onClick={async () => callStartGame()}
+          >
+            Start Game! 🚀
+          </button>
+        }
+        {game.isActive && 
+          <div className={classes.players}>
+            <div className={classes.player}>
+              <button
+                className={playerOne.id !== 0 ? classes.hidden : undefined} 
+                onClick={() => callCreatePlayer(1)}
+              >
+                create player 1
+              </button>
+              {playerOne.id !== 0 && 
+                <button onClick={() => sendAttack(playerOne.id)}>
+                  send player one attack ⚔️
+                </button>
+              }
+            </div>
+            <div className={classes.player}>
+              <button
+                className={playerTwo.id !== 0 ? classes.hidden : undefined}
+                onClick={() => callCreatePlayer(2)}
+              >
+                create player 2
+              </button>
+              {playerTwo.id !== 0 && 
+                <button onClick={() => sendAttack(playerTwo.id)}>
+                  send player two attack ⚔️
+                </button>
+              }
+            </div>
+          </div>
+        }
+        </div>     
+        {game.isActive && 
+          <p className={classes.footer}>{JSON.stringify(game, null, 2)}</p>
+        }
       </main>
     </>
   );
@@ -146,3 +151,4 @@ export default function HomeView() {
 /// create game --> createPlayer() --> if return success then call game --> playerId retured set it in game
 // call to create player --> player Service --> FE saves it in state && fires another api call to game
 //  .then(res => {gameServiceCall(res.data)}).catch()
+
