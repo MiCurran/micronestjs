@@ -4,9 +4,9 @@
     justify-content: space-between;
     align-items: center;
     min-height: 100vh;
+    text-transform: capitalize;
 }
 .app p {
-    color: red;
     margin: 20px
 }
 
@@ -16,6 +16,14 @@
     justify-content: space-between;
     padding: 25px;
     width: 100vw;
+}
+
+h3.danger {
+    color: red
+}
+
+h3.warning {
+    color: yellow
 }
 
 .game {
