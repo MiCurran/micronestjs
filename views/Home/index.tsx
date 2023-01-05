@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react';
 
-export default function HomeView({data, gameData}: {data: unknown, gameData: unknown}) {
-const [game, setGame] = useState({id: null});
+export default function HomeView() {
+const [game, setGame] = useState({id: 0, isActive: false});
 const [playerOne, setPlayerOne] = useState({id: 0});
 const [playerTwo, setPlayerTwo] = useState({id: 0});
 const [playerOneHits, setPlayerOneHits] = useState<number>(0)
@@ -14,45 +14,44 @@ const callStartGame = async () => {
   const status = response.status;
   const data = await response.json();
   if (status === 200) {
-    setGame(data.data.CreateGame);
+    setGame({...data.data.CreateGame});
   }
 }
 
-const callCreatePlayer1 = async () => {
+const saveIdToGame = async (gameId: number, playerNumber: 1 | 2, playerId: number) => {
+  const response = await fetch(`/api/saveIdToGame?playerNumber=${playerNumber}`, {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({playerId: playerId, gameId: gameId})
+  })
+  const data = response.json()
+};
+
+const callCreatePlayer = async (playerNumber: 1 | 2) => {
   const response = await fetch(`/api/createPlayer?gameId=${game.id}`)
-  const status = response.status;
-  const data = await response.json();
-  if (status === 200) {
-    setPlayerOne(data.data.initPlayer.id);
-  }
+  const data = response.json()
+    .then(data => {
+      if (playerNumber === 1) {
+        setPlayerOne(data.data.initPlayer.id)
+        saveIdToGame(game.id, playerNumber, data.data.initPlayer.id)
+
+      } else {
+        setPlayerTwo(data.data.initPlayer.id)
+        saveIdToGame(game.id, playerNumber, data.data.initPlayer.id)
+      }
+    })
 }
 
-const callCreatePlayer2 = async () => {
-  const response = await fetch(`/api/createPlayer?gameId=${game.id}`)
-  const status = response.status;
-  const data = await response.json();
-  if (status === 200) {
-    setPlayerTwo(data.data.initPlayer.id);
+const sendAttack = async (playerId: number): Promise<void> => {
+  const response = await fetch(`api/sendAttack?playerId=${playerId}`);
+  const data = response.json();
+  const status = response.status
+  if(status === 200) {
+    //setPlayerOneHits(data.data)
   }
 }
-
-const callPlayerOneAttack = async () => {
-  const response = await fetch(`/api/playerOneAttack?gameId=${game.id}`);
-  const status = response.status;
-  const data = await response.json();
-  if (status === 200) {
-    setPlayerOneHits(data.data.UpdateP1Hits.player1Hits);
-  }
-}
-const callPlayerTwoAttack = async () => {
-  const response = await fetch(`/api/playerTwoAttack?gameId=${game.id}`);
-  const status = response.status;
-  const data = await response.json();
-  if (status === 200) {
-    setPlayerTwoHits(data.data.UpdateP2Hits.player2Hits);
-  }
-}
-
 
 useEffect(() => {
     //when either playerOnehits || playerTwoHits === 10
@@ -96,24 +95,24 @@ useEffect(() => {
         </div>
 
         <button
-          disabled={game.id !== null}
+          disabled={game.isActive !== false}
           style={{cursor: 'pointer'}}
           onClick={async () => callStartGame()}
         >
           start game
         </button>
 
-          {game.id !== null &&
+          {game.isActive === true &&
             <>
             <p>{JSON.stringify(game, null, 2)}</p>
             <button
-              onClick={() => callCreatePlayer1()}
+              onClick={() => callCreatePlayer(1)}
             >
               create player 1
             </button>
 
             <button
-              onClick={() => callCreatePlayer2()}
+              onClick={() => callCreatePlayer(2)}
             >
               create player 2
             </button>
@@ -124,7 +123,7 @@ useEffect(() => {
           <>
             <p>player one is here</p>
             <button
-              onClick={() => callPlayerOneAttack()}
+              onClick={() => sendAttack(playerOne.id)}
             >
               send playerOne attack
             </button>
@@ -134,7 +133,7 @@ useEffect(() => {
           <>
             <p>player two is here</p>
             <button
-              onClick={() => callPlayerTwoAttack()}
+              onClick={() => sendAttack(playerTwo.id)}
             >
               send playerTwo attack
             </button>
@@ -144,3 +143,8 @@ useEffect(() => {
     </>
   )
 }
+
+
+/// create game --> createPlayer() --> if return success then call game --> playerId retured set it in game
+// call to create player --> player Service --> FE saves it in state && fires another api call to game
+//  .then(res => {gameServiceCall(res.data)}).catch()

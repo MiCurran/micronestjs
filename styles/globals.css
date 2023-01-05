@@ -87,7 +87,7 @@ body {
 
 body {
   color: rbg(--foreground-rgb);
-  background: #ccc
+  background: rgba(17, 36, 93, 0.389)
 }
 
 a {
