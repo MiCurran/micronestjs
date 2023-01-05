@@ -1,13 +1,13 @@
 .app {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 100vh;
+    text-transform: capitalize;
 }
 .app p {
-  color: red;
-  margin: 20px;
+    margin: 20px
 }
 
 .scoreRow {
@@ -16,6 +16,14 @@
   justify-content: space-between;
   padding: 25px;
   width: 100vw;
+}
+
+h3.danger {
+    color: red
+}
+
+h3.warning {
+    color: yellow
 }
 
 .game {
