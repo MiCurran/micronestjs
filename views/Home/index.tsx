@@ -79,9 +79,9 @@ export default function HomeView() {
       setWinner(game.id, playerOne.id);
     }
     if (playerTwoHits === 10) {
-      setWinner(game.id, playerOne.id);
+      setWinner(game.id, playerTwo.id);
     }
-  }, [game.id, playerOne.id, playerOneHits, playerTwoHits]);
+  }, [game.id, playerOne.id, playerOneHits, playerTwo.id, playerTwoHits]);
 
   return (
     <>
