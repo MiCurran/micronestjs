@@ -12,7 +12,7 @@ export default function HomeView() {
     const status = response.status;
     const data = await response.json();
     if (status === 200) {
-      setGame({ ...data.data.CreateGame });
+      setGame({ ...data.CreateGame });
     }
   };
 
@@ -38,11 +38,11 @@ export default function HomeView() {
     const response = await fetch(`/api/createPlayer?gameId=${game.id}`);
     const data = response.json().then((data) => {
       if (playerNumber === 1) {
-        setPlayerOne({ id: data.data.initPlayer.id, hits: 0 });
-        saveIdToGame(game.id, playerNumber, data.data.initPlayer.id);
+        setPlayerOne({ id: data.initPlayer.id, hits: 0 });
+        saveIdToGame(game.id, playerNumber, data.initPlayer.id);
       } else {
-        setPlayerTwo({ id: data.data.initPlayer.id, hits: 0 });
-        saveIdToGame(game.id, playerNumber, data.data.initPlayer.id);
+        setPlayerTwo({ id: data.initPlayer.id, hits: 0 });
+        saveIdToGame(game.id, playerNumber, data.initPlayer.id);
       }
     });
   };
@@ -65,8 +65,8 @@ export default function HomeView() {
     );
     const status = response.status;
     const data = await response.json().then((data) => {
-      if (status === 200 && winnerId === data.data.UpdateWinner.gameWinner) {
-        setWinnerHere(data.data.UpdateWinner.gameWinner);
+      if (status === 200 && winnerId === data.UpdateWinner.gameWinner) {
+        setWinnerHere(data.UpdateWinner.gameWinner);
         console.log('We have a winner!:', winnerId);
       }
     });

@@ -4,8 +4,7 @@ import { gql } from '@apollo/client';
 import { playerGraphqlClient, gameGraphqlClient } from '../../graphql';
 
 type Data = {
-  name?: string
-  data?: unknown
+  initPlayer?: unknown
 }
 
 export default async function handler(
@@ -46,5 +45,5 @@ UpdatePlayerIDs(updateGameInput: {id: $gameId, player2Id: $playerId}){
       variables: {gameId, playerId}
     })).data;
    //check for error 
-  res.status(200).json({data: {initPlayer: data}})
+  res.status(200).json({initPlayer: data})
 }
