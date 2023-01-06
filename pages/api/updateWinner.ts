@@ -31,5 +31,5 @@ export default async function handler(
     })
   ).data;
   //check for error
-  res.status(200).json({ data: data });
+  res.status(200).json(data);
 }
