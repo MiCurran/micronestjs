@@ -8,7 +8,7 @@ export default function HomeView() {
   const [winnerHere, setWinnerHere] = useState<number>(0);
 
   const callStartGame = async () => {
-    const response = await fetch('/api/hello');
+    const response = await fetch('/api/createGame');
     const status = response.status;
     const data = await response.json();
     if (status === 200) {
