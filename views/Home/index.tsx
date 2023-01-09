@@ -6,6 +6,7 @@ export default function HomeView() {
   const [playerOne, setPlayerOne] = useState<Player>({ id: 0, hits: 0 });
   const [playerTwo, setPlayerTwo] = useState<Player>({ id: 0, hits: 0 });
   const [winnerHere, setWinnerHere] = useState<number>(0);
+  const HITS_TO_WIN: PlayerHealthRange = 10;
 
   const callStartGame = async () => {
     const response = await fetch('/api/createGame');
@@ -86,10 +87,10 @@ export default function HomeView() {
   const isPlayerOne = winnerHere === playerOne.id;
 
   useEffect(() => {
-    if (playerOne.hits === 10) {
+    if (playerOne.hits === HITS_TO_WIN) {
       setWinner(game.id, playerOne.id);
     }
-    if (playerTwo.hits === 10) {
+    if (playerTwo.hits === HITS_TO_WIN) {
       setWinner(game.id, playerTwo.id);
     }
   }, [game.id, playerOne.id, playerOne.hits, playerTwo.id, playerTwo.hits]);
@@ -106,14 +107,14 @@ export default function HomeView() {
         <div className={classes.scoreRow}>
           <h3 className={getPlayerClass(playerTwo.hits)}>player 1</h3>
           <DamageMeter
-            health={(10 - playerTwo.hits as PlayerHealthRange)}
+            health={(HITS_TO_WIN - playerTwo.hits as PlayerHealthRange)}
             style={{transform: 'rotate(180deg)'}}
           />
           <div>
             <h4>Game: {game.id}</h4>
           </div>
           <DamageMeter 
-            health={(10 - playerOne.hits as PlayerHealthRange)}
+            health={(HITS_TO_WIN - playerOne.hits as PlayerHealthRange)}
           />
           <h3 className={getPlayerClass(playerOne.hits)}>player 2</h3>
         </div>
