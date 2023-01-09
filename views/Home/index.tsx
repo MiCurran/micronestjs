@@ -52,10 +52,10 @@ export default function HomeView() {
     const status = response.status;
     const data = await response.json();
     if (status === 200 && playerId === playerOne.id && winnerHere === 0) {
-      setPlayerOne({ ...playerOne, hits: playerOne.hits + 1 });
+      setPlayerOne({ ...playerOne, hits: data.sendAttack.hits });
     }
     if (status === 200 && playerId === playerTwo.id && winnerHere === 0) {
-      setPlayerTwo({ ...playerTwo, hits: playerTwo.hits + 1 });
+      setPlayerTwo({ ...playerTwo, hits: data.sendAttack.hits });
     }
   };
 
