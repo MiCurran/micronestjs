@@ -1,13 +1,18 @@
 .app {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    min-height: 100vh;
-    text-transform: capitalize;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  text-transform: capitalize;
 }
 .app p {
-    margin: 20px
+  margin: 20px;
+}
+
+.app .game:last-child {
+  position: relative;
+  top: -200px;
 }
 
 .scoreRow {
@@ -19,11 +24,11 @@
 }
 
 h3.danger {
-    color: red
+  color: red;
 }
 
 h3.warning {
-    color: yellow
+  color: yellow;
 }
 
 .game {
