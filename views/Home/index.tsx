@@ -105,11 +105,16 @@ export default function HomeView() {
       <main className={classes.app}>
         <div className={classes.scoreRow}>
           <h3 className={getPlayerClass(playerTwo.hits)}>player 1</h3>
-          <h2>{playerOne.hits}</h2>
+          <DamageMeter
+            health={(10 - playerTwo.hits as PlayerHealthRange)}
+            style={{transform: 'rotate(180deg)'}}
+          />
           <div>
             <h4>Game: {game.id}</h4>
           </div>
-          <h2>{playerTwo.hits}</h2>
+          <DamageMeter 
+            health={(10 - playerOne.hits as PlayerHealthRange)}
+          />
           <h3 className={getPlayerClass(playerOne.hits)}>player 2</h3>
         </div>
         {winnerHere !== 0 && (
@@ -162,4 +167,20 @@ export default function HomeView() {
       </main>
     </>
   );
+}
+
+type PlayerHealthRange = Ran<11>
+const DamageMeter = ({health, style}: {style?:{}, health: PlayerHealthRange}) => {
+  return (
+    <meter
+      min="0" max="10"
+      low={2}
+      value={health}
+      style={{
+        ...style,
+        width: '30vw',
+        height: '2rem'
+      }}
+    />
+  )
 }
