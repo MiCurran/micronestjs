@@ -51,11 +51,11 @@ export default function HomeView() {
     const response = await fetch(`/api/sendAttack?id=${playerId}`);
     const status = response.status;
     const data = await response.json();
-    if (status === 200 && playerId === playerOne.id) {
-      setPlayerOne({...playerOne, hits: playerOne.hits + 1});
+    if (status === 200 && playerId === playerOne.id && winnerHere === 0) {
+      setPlayerOne({ ...playerOne, hits: playerOne.hits + 1 });
     }
-    if (status === 200 && playerId === playerTwo.id) {
-      setPlayerTwo({...playerTwo, hits: playerTwo.hits + 1});
+    if (status === 200 && playerId === playerTwo.id && winnerHere === 0) {
+      setPlayerTwo({ ...playerTwo, hits: playerTwo.hits + 1 });
     }
   };
 
@@ -73,15 +73,15 @@ export default function HomeView() {
   };
 
   const getPlayerClass = (hits: number): string | undefined => {
-      let playerClass = undefined;
-      if (hits > 4) {
-        playerClass = classes.warning
-      }
-      if (hits > 7) {
-        playerClass = classes.danger
-      }
-      return playerClass;
-  }
+    let playerClass = undefined;
+    if (hits > 4) {
+      playerClass = classes.warning;
+    }
+    if (hits > 7) {
+      playerClass = classes.danger;
+    }
+    return playerClass;
+  };
 
   const isPlayerOne = winnerHere === playerOne.id;
 
@@ -162,4 +162,4 @@ export default function HomeView() {
       </main>
     </>
   );
-};
+}
